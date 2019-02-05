@@ -1,10 +1,17 @@
 grammar Little;
 
-/* Grammar rules for Lexer */
-INTLITERAL:
-FLOATLITERAL:
-STRINGLITERAL:
-COMMENT:
-KEYWORD: 'PROGRAM' | 'BEGIN'| 'END' | 'FUNCTION' | 'READ' | 'WRITE' | 'IF' | 'ELSE' | 'ENDIF' | 'WHILE' | 'ENDWHILE' | 'CONTINUE' | 'BREAK' | 'RETURN' | 'INT' | 'VOID' | 'STRING' | 'FLOAT';
-OPERATOR: ':=' | '+' | '-' | '*' | '/' | '=' | '!=' | '<' | '>' | '(' | ')' | ';' | ','| '<=' | '>=';
-WHITESPACE: [ \t\n]+ -> skip ;
+/*
+ * Parser Rules
+ */
+
+
+/*
+ * Lexer Rules
+ */
+INTLITERAL    : [0-9]+ ;
+FLOATLITERAL  : [0-9]*'.'[0-9]+ ;
+STRINGLITERAL : '"'.*?'"' ;
+COMMENT       : '--' .*? '\n' ;
+KEYWORD       : 'PROGRAM' | 'BEGIN'| 'END' | 'FUNCTION' | 'READ' | 'WRITE' | 'IF' | 'ELSE' | 'ENDIF' | 'WHILE' | 'ENDWHILE' | 'CONTINUE' | 'BREAK' | 'RETURN' | 'INT' | 'VOID' | 'STRING' | 'FLOAT' ;
+OPERATOR      : ':=' | '+' | '-' | '*' | '/' | '=' | '!=' | '<' | '>' | '(' | ')' | ';' | ','| '<=' | '>=' ;
+WS            : [ \t\n]+ -> skip ; // skips spaces, tabs, newlines
