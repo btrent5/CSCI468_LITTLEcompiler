@@ -1,4 +1,4 @@
-grammar Little;
+grammar little_grammar;
 
 /*
  * Parser Rules
