@@ -1,15 +1,13 @@
 import org.antlr.v4.runtime.*;
-import java.io.*;
-//https://www.antlr.org/api/Java/overview-summary.html (java antlr api)
-
-public class printTokens {
-    /**
-     * Read in input file though CLI args
-     */
-    public static void main(String[] args) throws Exception {
-        File file = new File(args[0]);
-        BufferedReader br = new BufferedReader(new FileReader(file));
+public class printTokens 
+{
+    public static void main( String[] args) throws Exception 
+    {	
+        little_grammarLexer lex = new little_grammarLexer(CharStreams.fromFileName(args[0]));
+        Vocabulary voc = lex.getVocabulary();
+        for (Token tok = lex.nextToken(); tok.getType() != tok.EOF; tok = lex.nextToken()) {
+            System.out.println("Token Type: " + voc.getSymbolicName(tok.getType()));
+            System.out.println("Value: " + tok.getText());
+        }
     }
-
-
 }
