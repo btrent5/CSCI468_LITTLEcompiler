@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# generate and compile files
+antlr little_grammar.g4
+javac little_grammar*.java
+javac printTokens.java
+
+# check args
+if [[ $# -eq 0 ]] ; then
+    # If this completes without printing anything, then all generated tokens match the expected output
+    diff -b <(java printTokens ./inputs/fibonacci.micro) outputs/fibonacci.out
+    diff -b <(java printTokens ./inputs/loop.micro) outputs/loop.out
+    diff -b <(java printTokens ./inputs/nested.micro) outputs/nested.out
+    diff -b <(java printTokens ./inputs/sqrt.micro) outputs/sqrt.out
+else
+    # run program
+    java printTokens $1
+fi
+
+# remove generated files
+rm -rf *.class
+rm -rf little_grammar*.java
+rm -rf *.tokens
