@@ -4,3 +4,6 @@
 
 # java files
 *.class
+
+# Other Files
+.DS_Store
