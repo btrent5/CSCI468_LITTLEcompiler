@@ -1,0 +1,24 @@
+#!/bin/bash
+
+INPUTFILES=tests/inputs/*
+
+# generate and compile files
+antlr little_grammar.g4
+javac little_grammar*.java
+javac printTokens.java
+
+if [[ $# -eq 0 ]] ; then
+    for i in $INPUTFILES   # if no CLA, loop through and test all inputs
+    do
+        echo "Filename = $i"
+        # Driver $i
+    done
+else
+    java Driver $1     # run program with CLA
+fi
+
+
+# remove generated files
+rm -rf *.class
+rm -rf little_grammar*.java
+rm -rf *.tokens

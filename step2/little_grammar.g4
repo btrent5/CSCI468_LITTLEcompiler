@@ -50,15 +50,17 @@ expr_list_tail : (',' expr expr_list_tail)?;
 primary : '(' expr ')' | id | 'INTLITERAL' | 'FLOATLITERAL';
 addop : '+' | '-';
 mulop : '*' | '/';
+
 /* Complex Statements and Condition */ 
 if_stmt : 'IF' ( cond ) decl stmt_list else_part 'ENDIF';
 else_part : ('ELSE' decl stmt_list)?;
 cond : expr compop expr;
 compop : '<' | '>' | '=' | '!=' | '<=' | '>=';
 
-/* While statements */
+/* While Statement */
 while_stmt : 'WHILE' '(' cond ')' decl stmt_list 'ENDWHILE';
 
+/* Lexical Scope */
 OPERATOR : (':='|'!='|'<='|'>='|'+'|'-'|'*'|'/'|'('|')'|';'|','|'<'|'>'|'=');
 KEYWORD : ('PROGRAM'|'BEGIN'|'FUNCTION'|'READ'|'WRITE'|'ELSE'|'ENDIF'|'ENDWHILE'|'CONTINUE'|'BREAK'|'RETURN'|'INT'|'VOID'|'STRING'|'FLOAT'|'END'|'IF'|'WHILE');
 IDENTIFIER : [A-z]([0-9]|[A-z])*;
