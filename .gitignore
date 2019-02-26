@@ -9,3 +9,6 @@ antlr-4.7.2-complete.jar
 
 # Other Files
 .DS_Store
+
+# Grading script files
+usertest/
