@@ -22,8 +22,12 @@ function run_tests {
     if [[ $# -eq 0 ]] ; then
         for i in tests/inputs/*   # if no CLA, loop through and test all inputs
         do
-            echo "Test for $i"
-            java Driver $i
+            filepath=${i%.*}
+            filename=${filepath##*/}
+            echo "Running $filename..."
+            out="${filename}.out"
+            java Driver $i > tests/our_outputs/${out}
+            diff -b -s tests/outputs/${out} tests/our_outputs/${out}
         done
     else
         java Driver $1     # run program with CLA

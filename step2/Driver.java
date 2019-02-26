@@ -8,7 +8,7 @@ public class Driver
         CommonTokenStream tok = new CommonTokenStream(lex);
         little_grammarParser par = new little_grammarParser(tok);
         new ParseTreeWalker().walk(new little_grammarBaseListener(), par.program());
-        String result = par.getNumberOfSyntaxErrors() > 0 ? "Not Accepted" : "Accepted";
+        String result = par.getNumberOfSyntaxErrors() > 0 ? "Not accepted" : "Accepted";
         System.out.println(result);
     }
 }
