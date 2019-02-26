@@ -11,6 +11,7 @@ function check_antlr_jar {
 # Generate antlr files and compile everything.
 function setup {
     # echo "Generating and compiling Files..."
+    export CLASSPATH="./antlr-4.7.2-complete.jar:$CLASSPATH"
     java -jar ./antlr-4.7.2-complete.jar little_grammar.g4
     javac little_grammar*.java
     javac Driver.java
