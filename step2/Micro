@@ -1,23 +1,50 @@
 #!/bin/bash
-INPUTFILES=tests/inputs/*
 
-# generate and compile files
-antlr4 little_grammar.g4
-javac little_grammar*.java
-javac Driver.java
+# Check if correct antlr jar is available, if not, download it.
+function check_antlr_jar {
+  if [ ! -f ./antlr-4.7.2-complete.jar ]; then
+      echo "No ANTLR JAR found, downloading it now..."
+      curl -O https://www.antlr.org/download/antlr-4.7.2-complete.jar
+  fi
+}
 
-if [[ $# -eq 0 ]] ; then
-    for i in $INPUTFILES   # if no CLA, loop through and test all inputs
-    do
-        echo "Test for $i"
-        java Driver $i
-    done
-else
-    java Driver $1     # run program with CLA
-fi
+# Generate antlr files and compile everything.
+function setup {
+    echo "Generating and compiling Files..."
+    java -jar ./antlr-4.7.2-complete.jar little_grammar.g4
+    javac little_grammar*.java
+    javac Driver.java
+}
 
+# Run the input tests agaisnt Driver.java.
+function run_tests {
+    echo "Running Tests..."
+    if [[ $# -eq 0 ]] ; then
+        for i in tests/inputs/*   # if no CLA, loop through and test all inputs
+        do
+            filepath=${i%.*}
+            filename=${filepath##*/}
+            echo "Running $filename..."
+            out="${filename}.out"
+            java Driver $i > tests/our_outputs/${out}
+            diff -b -s tests/outputs/${out} tests/our_outputs/${out}
+        done
+    else
+        java Driver $1     # run program with CLA
+    fi
+}
 
-# remove generated files
-rm -rf *.class
-rm -rf little_grammar*.java
-rm -rf *.tokens
+# Remove generated files.
+function remove_files {
+    echo "Removing generated files..."
+    rm -rf *.class
+    rm -rf little_grammar*.java
+    rm -rf *.tokens
+    rm -rf *.interp
+}
+
+# Call functions.
+check_antlr_jar
+setup
+run_tests
+remove_files
