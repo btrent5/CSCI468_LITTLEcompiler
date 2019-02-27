@@ -1,9 +1,8 @@
 #!/bin/bash
-
 # Check if correct antlr jar is available, if not, download it.
 function check_antlr_jar {
   if [ ! -f ./antlr-4.7.2-complete.jar ]; then
-    #   echo "No ANTLR JAR found, downloading it now..."
+      echo "No ANTLR JAR found, downloading it now..."
       curl -O https://www.antlr.org/download/antlr-4.7.2-complete.jar
   fi
 }
@@ -14,25 +13,23 @@ function setup {
     export CLASSPATH="./antlr-4.7.2-complete.jar:$CLASSPATH"
     java -jar ./antlr-4.7.2-complete.jar little_grammar.g4
     javac little_grammar*.java
-    javac Driver.java
+    javac printTokens.java
 }
 
-# Run the input tests agaisnt Driver.java.
+# run tests depending on input
 function run_tests {
     # echo "Running Tests..."
-    if [[ $# -eq 0 ]] ; then
-        for i in ./inputs/*   # if no CLA, loop through and test all inputs
-        do
-            filepath=${i%.*}
-            filename=${filepath##*/}
-            # echo "Running $filename..."
-            out="${filename}.out"
-            java Driver $i > ./our_outputs/${out}
-            diff -b -s ./outputs/${out} ./our_outputs/${out}
-        done
-    else
-        java Driver $1
-    fi
+        # check args
+        if [[ $# -eq 0 ]] ; then
+            # If this completes without printing anything, then all generated tokens match the expected output
+            diff -b -B -s <(java printTokens ./inputs/fibonacci.micro) outputs/fibonacci.out
+            diff -b -B -s <(java printTokens ./inputs/loop.micro) outputs/loop.out
+            diff -b -B -s <(java printTokens ./inputs/nested.micro) outputs/nested.out
+            diff -b -B -s <(java printTokens ./inputs/sqrt.micro) outputs/sqrt.out
+        else
+        # run program
+            java printTokens $1
+        fi
 }
 
 # Remove generated files.
@@ -44,10 +41,8 @@ function remove_files {
     rm -rf *.interp
 }
 
-# Call functions.
+# execute program.
 check_antlr_jar
 setup
 run_tests $1
-# java Driver $1
-
 remove_files
