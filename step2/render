@@ -6,13 +6,12 @@ java -jar antlr-4.7.2-complete.jar little_grammar.g4
 
 javac little_grammar*.java
 
-# for i in ./little_grammar*.dot
-# do
-#     filename=${i%.*}
-#     echo generating ${filename}
-#     dot -Tpng ${filename}.dot -o images/${filename}.png
-# done
-
+for i in ./little_grammar*.dot
+do
+    filename=${i%.*}
+    echo generating ${filename}
+    dot -Tpng ${filename}.dot -o images/${filename}.png
+done
 
 if [[ $# -eq 0 ]] ; then
     echo "no test number passed, skipping tree"
