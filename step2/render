@@ -1,0 +1,26 @@
+#!/bin/bash
+# generate dot files and render into png
+
+java -jar antlr-4.7.2-complete.jar -atn little_grammar.g4
+java -jar antlr-4.7.2-complete.jar little_grammar.g4
+
+javac little_grammar*.java
+
+for i in ./little_grammar*.dot
+do
+    filename=${i%.*}
+    echo generating ${filename}
+    dot -Tpng ${filename}.dot -o images/${filename}.png
+done
+
+if [[ $# -eq 0 ]] ; then
+    echo "no test number passed, skipping tree"
+else {}
+    java org.antlr.v4.gui.TestRig little_grammar program inputs/test${1}.micro -gui
+fi
+
+rm -rf *.class
+rm -rf little_grammar*.java
+rm -rf *.tokens
+rm -rf *.interp
+rm ./*.dot
