@@ -11,9 +11,11 @@ function check_antlr_jar {
 # Generate antlr files and compile everything.
 function setup {
     # echo "Generating and compiling Files..."
-    export CLASSPATH="./antlr-4.7.2-complete.jar:$CLASSPATH"
+    # export CLASSPATH="./antlr-4.7.2-complete.jar:$CLASSPATH"
     java -jar ./antlr-4.7.2-complete.jar little_grammar.g4
     javac little_grammar*.java
+    javac SymbolTable.java
+    javac Listener.java
     javac Driver.java
 }
 
@@ -28,7 +30,7 @@ function run_tests {
             # echo "Running $filename..."
             out="${filename}.out"
             java Driver $i > ./our_outputs/${out}
-            diff -b -s ./outputs/${out} ./our_outputs/${out}
+            diff -b -s ./outputs/${out} ./our_outputs/$ {out}
         done
     else
         java Driver $1
