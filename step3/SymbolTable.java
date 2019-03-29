@@ -10,8 +10,13 @@ public class SymbolTable {
     private String scope;
     public ArrayList<Symbol> symbols;
 
+    public SymbolTable(String scopeName) {
+        this.scope = scopeName;
+        this.symbols = new ArrayList<Symbol>();
+    }
+
     public SymbolTable() {
-        this.scope = "global";
+        this.scope = "placeholder";
         this.symbols = new ArrayList<Symbol>();
     }
 
