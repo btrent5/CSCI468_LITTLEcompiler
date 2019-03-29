@@ -49,5 +49,5 @@ function remove_files {
 # Call functions.
 check_antlr_jar
 setup
-run_tests $1
+#run_tests $1
 remove_files

@@ -12,13 +12,23 @@ public class Listener extends little_grammarBaseListener {
 
     @Override
     public void enterFunc_decl(little_grammarParser.Func_declContext ctx) {
-        //operate on symbol table here
+        s.addScope(ctx.getText());
     }
 
     @Override
     public void exitFunc_decl(little_grammarParser.Func_declContext ctx) {
-        //operate on symbol table here
+        //pop off scop stack?
     }
 
-    //additional rules and/or helper methods here...
+    @Override 
+    public void enterString_decl(little_grammarParser.String_declContext ctx) {
+
+    }
+
+    @Override 
+    public void exitString_decl(little_grammarParser.String_declContext ctx) {
+
+    }
+
+
 }
