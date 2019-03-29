@@ -25,12 +25,14 @@ public class SymbolTable {
     }
 
     public void prettyPrint() {
-        System.out.println("-----[begin " + this.scope + "]-----");
+        System.out.println("Symbol table " + this.scope);
 
         for (Symbol sym : this.symbols) {
-            System.out.println("| " + sym.getType() + " " + sym.getName() + " = " + sym.getValue());
+            System.out.print("name " + sym.getName() + " type " + sym.getType());
+            if (sym.getValue() != "") {
+                System.out.print(" value " + sym.getValue());
+            }
+            System.out.println();
         }
-
-        System.out.println("-----[end " + this.scope + "]-----");
     }
 }

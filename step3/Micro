@@ -31,7 +31,7 @@ function run_tests {
             # echo "Running $filename..."
             out="${filename}.out"
             java Driver $i > ./our_outputs/${out}
-            diff -b -s ./outputs/${out} ./our_outputs/${out}
+            diff -B -b -s ./outputs/${out} ./our_outputs/${out}
         done
     else
         java Driver $1
