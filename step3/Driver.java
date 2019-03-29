@@ -8,23 +8,13 @@ import org.antlr.v4.runtime.tree.*;
  * @Author Michael Pollard, Ethan Malo, Marie Morin, Trent Baker
  */
 public class Driver {
-    public static void main( String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         little_grammarParser parser = new little_grammarParser(
-            new CommonTokenStream(
-                new little_grammarLexer(
-                    CharStreams.fromFileName(args[0]))));
+                new CommonTokenStream(new little_grammarLexer(CharStreams.fromFileName(args[0]))));
         Listener listener = new Listener();
         new ParseTreeWalker().walk(listener, parser.program());
         SymbolTable s = listener.getSymbolTable();
-        prettyPrint(s);
+        s.prettyPrint();
     }
 
-    /**
-     * This method prints out the SymbolTable in a human readable format.
-     *
-     * @param s the SymbolTable
-     */
-    public static void prettyPrint(SymbolTable s) {
-        System.out.println("prettyPrint Not Yet Implemented");
-    }
 }

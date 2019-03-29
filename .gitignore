@@ -12,3 +12,7 @@ antlr-4.7.2-complete.jar
 
 # Grading script files
 usertest/
+
+# VS code files
+.vscode/
+
