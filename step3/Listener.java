@@ -10,6 +10,7 @@ public class Listener extends little_grammarBaseListener {
     private ArrayList<SymbolTable> tableList;
     private Boolean inDecl = true;
     private String declType = "";
+    private int scopeNum = 1;
 
     public Listener() {
         tableList = new ArrayList<SymbolTable>();
@@ -21,7 +22,7 @@ public class Listener extends little_grammarBaseListener {
 
     @Override
     public void enterProgram(little_grammarParser.ProgramContext ctx) {
-        this.s = new SymbolTable("global");
+        this.s = new SymbolTable("GLOBAL");
         this.tableList.add(s);
     }
 
@@ -47,6 +48,13 @@ public class Listener extends little_grammarBaseListener {
     }
 
     @Override
+    public void enterVar_type(little_grammarParser.Var_typeContext ctx) {
+        if (ctx != null) {
+            this.declType = ctx.getText();
+        }
+    }
+
+    @Override
     public void enterId_list(little_grammarParser.Id_listContext ctx) {
         if (this.inDecl) {
             this.s.add(ctx.id().getText(), this.declType, "");
@@ -65,10 +73,40 @@ public class Listener extends little_grammarBaseListener {
         this.s.add(ctx.id().getText(), ctx.var_type().getText(), "");
     }
 
+    // SCUMBAG
+
     @Override
-    public void enterVar_type(little_grammarParser.Var_typeContext ctx) {
-        if (ctx != null) {
-            this.declType = ctx.getText();
+    public void enterFunc_decl(little_grammarParser.Func_declContext ctx) {
+        if (ctx.any_type() != null) {
+            this.s = new SymbolTable(ctx.id().getText());
+            this.tableList.add(this.s);
+        }
+    }
+
+    @Override
+    public void enterIf_stmt(little_grammarParser.If_stmtContext ctx) {
+
+        if (ctx.cond() != null) {
+            this.s = new SymbolTable("BLOCK " + scopeNum++);
+            this.tableList.add(this.s);
+        }
+    }
+
+    @Override
+    public void enterElse_part(little_grammarParser.Else_partContext ctx) {
+
+        if (ctx.decl() != null) {
+            this.s = new SymbolTable("BLOCK " + scopeNum++);
+            this.tableList.add(this.s);
+        }
+    }
+
+    @Override
+    public void enterWhile_stmt(little_grammarParser.While_stmtContext ctx) {
+
+        if (ctx.cond() != null) {
+            this.s = new SymbolTable("BLOCK " + scopeNum++);
+            this.tableList.add(this.s);
         }
     }
 }
