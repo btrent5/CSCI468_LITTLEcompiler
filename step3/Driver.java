@@ -13,8 +13,9 @@ public class Driver {
                 new CommonTokenStream(new little_grammarLexer(CharStreams.fromFileName(args[0]))));
         Listener listener = new Listener();
         new ParseTreeWalker().walk(listener, parser.program());
-        SymbolTable s = listener.getSymbolTable();
-        s.prettyPrint();
+        for (SymbolTable s : listener.getSymbolTables()) {
+            s.prettyPrint();
+        }
     }
 
 }
