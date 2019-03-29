@@ -73,8 +73,6 @@ public class Listener extends little_grammarBaseListener {
         this.s.add(ctx.id().getText(), ctx.var_type().getText(), "");
     }
 
-    // SCUMBAG
-
     @Override
     public void enterFunc_decl(little_grammarParser.Func_declContext ctx) {
         if (ctx.any_type() != null) {
