@@ -15,4 +15,4 @@ INTLITERAL    : [0-9]+ ;
 STRINGLITERAL : '"'.*?'"' ;
 COMMENT       : '--' .*? '\n' -> skip ;
 OPERATOR      : ':=' | '+' | '-' | '*' | '/' | '=' | '!=' | '<' | '>' | '(' | ')' | ';' | ','| '<=' | '>=' ;
-WS            : [ \t\n]+ -> skip ; // skips spaces, tabs, newlines
+WS            : [ \t\n\r]+ -> skip ; // skips spaces, tabs, newlines

@@ -1,8 +1,9 @@
-# !/bin/bash
+#!/bin/bash
+
 # Check if correct antlr jar is available, if not, download it.
 function check_antlr_jar {
   if [ ! -f ./antlr-4.7.2-complete.jar ]; then
-      echo "No ANTLR JAR found, downloading it now..."
+    #   echo "No ANTLR JAR found, downloading it now..."
       curl -O https://www.antlr.org/download/antlr-4.7.2-complete.jar
   fi
 }
@@ -13,7 +14,25 @@ function setup {
     export CLASSPATH="./antlr-4.7.2-complete.jar:$CLASSPATH"
     java -jar ./antlr-4.7.2-complete.jar little_grammar.g4
     javac little_grammar*.java
-    javac printTokens.java
+    javac Driver.java
+}
+
+# Run the input tests agaisnt Driver.java.
+function run_tests {
+    # echo "Running Tests..."
+    if [[ $# -eq 0 ]] ; then
+        for i in ./inputs/*   # if no CLA, loop through and test all inputs
+        do
+            filepath=${i%.*}
+            filename=${filepath##*/}
+            # echo "Running $filename..."
+            out="${filename}.out"
+            java Driver $i > ./our_outputs/${out}
+            diff -b -s ./outputs/${out} ./our_outputs/${out}
+        done
+    else
+        java Driver $1
+    fi
 }
 
 # Remove generated files.
@@ -25,10 +44,8 @@ function remove_files {
     rm -rf *.interp
 }
 
-# execute program.
+# Call functions.
 check_antlr_jar
 setup
-
-java printTokens $1
-
+run_tests $1
 remove_files
