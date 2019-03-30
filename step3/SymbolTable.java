@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This class creates the SymbolTable.
@@ -26,7 +27,6 @@ public class SymbolTable {
 
     public void prettyPrint() {
         System.out.println("Symbol table " + this.scope);
-
         for (Symbol sym : this.symbols) {
             System.out.print("name " + sym.getName() + " type " + sym.getType());
             if (sym.getValue() != "") {
@@ -34,5 +34,18 @@ public class SymbolTable {
             }
             System.out.println();
         }
+    }
+
+    public boolean isValid() {
+        ArrayList<String> dupes = new ArrayList<String>();
+
+        for (Symbol sym : this.symbols) {
+            if (dupes.contains(sym.getName())) {
+                return false;
+            } else {
+                dupes.add(sym.getName());
+            }
+        }
+        return true;
     }
 }

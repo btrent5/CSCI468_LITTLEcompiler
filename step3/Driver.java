@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
@@ -13,6 +15,14 @@ public class Driver {
                 new CommonTokenStream(new little_grammarLexer(CharStreams.fromFileName(args[0]))));
         Listener listener = new Listener();
         new ParseTreeWalker().walk(listener, parser.program());
+
+        for (SymbolTable s : listener.getSymbolTables()) {
+            if (!s.isValid()) {
+                System.out.println("DECLARATION ERROR n");
+                return;
+            }
+        }
+
         for (SymbolTable s : listener.getSymbolTables()) {
             s.prettyPrint();
         }
