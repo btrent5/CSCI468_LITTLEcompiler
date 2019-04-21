@@ -2,7 +2,7 @@ class tinyGenerator {
 
 	public tinyGenerator() {
 		switch (operator) {
-		case "DDI":
+		case "ADDI":
 			output.append("addi");
 			break;
 		case "ADDR":
