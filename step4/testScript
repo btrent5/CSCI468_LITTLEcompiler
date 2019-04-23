@@ -1,0 +1,7 @@
+#!/bin/bash
+
+javac IRNode.java
+javac TinyGenerator.java
+javac TestDriver.java
+
+java TestDriver
