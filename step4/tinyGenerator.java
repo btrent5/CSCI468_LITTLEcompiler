@@ -1,12 +1,19 @@
 import java.util.ArrayList;
 
+/*
+ * as of last time this comment was updated, this has features for the following test cases
+ *
+ * test_if
+ * step4_testcase
+ * step4_testcase2
+*/
+
 class TinyGenerator {
 	private int varOffset = 0;
 	StringBuilder output = new StringBuilder();
 
 	public TinyGenerator(ArrayList<IRNode> input) {
 		for (IRNode current : input) {
-			// still need to prepend all var names maybe make part of convertRegString?? tbd
 			switch (current.getOperator()) {
 			case "ADDI":
 				this.output.append("move " + convertRegString(current.getReg1()) + " "
@@ -30,9 +37,18 @@ class TinyGenerator {
 				break;
 			case "ENDOFPROGRAM":
 				break;
+			case "EQI":
+				output.append("cmpi " + convertRegString(current.getReg1()) + " " + convertRegString(current.getReg2())
+						+ "\n");
+				output.append("jeq " + current.getReg3() + "\n");
+				break;
 			case "GEI":
 				this.output.append("cmpi " + current.getReg1() + " " + convertRegString(current.getReg2()) + "\n");
 				this.output.append("jge " + current.getReg3() + "\n");
+				break;
+			case "GTI":
+				this.output.append("cmpi " + current.getReg1() + " " + convertRegString(current.getReg2()) + "\n");
+				this.output.append("jgt " + current.getReg3() + "\n");
 				break;
 			case "INCI":
 				break;
@@ -56,17 +72,33 @@ class TinyGenerator {
 			case "LABEL":
 				this.output.append("label " + current.getReg1() + "\n");
 				break;
+			case "LEI":
+				this.output.append("cmpi " + convertRegString(current.getReg1()) + " "
+						+ convertRegString(current.getReg2()) + "\n");
+				this.output.append("jle " + current.getReg3() + "\n");
+				break;
 			case "LINK":
 				break;
 			case "MOVE":
 				break;
-			case "MULI":
-				break;
 			case "MULR":
+				break;
+			case "MULTI":
+				this.output.append("move " + convertRegString(current.getReg1()) + " "
+						+ convertRegString(current.getReg3()) + "\n");
+				this.output.append("muli " + convertRegString(current.getReg2()) + " "
+						+ convertRegString(current.getReg3()) + "\n");
+				break;
+			case "NEI":
+				this.output.append("cmpi " + current.getReg1() + " " + convertRegString(current.getReg2()) + "\n");
+				this.output.append("jne " + current.getReg3() + "\n");
 				break;
 			case "POP":
 				break;
 			case "PUSH":
+				break;
+			case "READI":
+				this.output.append("sys readi " + convertRegString(current.getReg1()) + "\n");
 				break;
 			case "RET":
 				this.output.append("sys halt");
@@ -94,9 +126,29 @@ class TinyGenerator {
 			case "WRITEI":
 				this.output.append("sys writei " + current.getReg1() + "\n");
 				break;
+			case "WRITES":
+				this.output.append("sys writes " + current.getReg1() + "\n");
+				prependStringValue(current.getReg1());
+				break;
 			}
 		}
-		System.out.println(output);
+		System.out.print(output);
+	}
+
+	private void prependStringValue(String input) {
+		switch (input) {
+		case "newline":
+			if (!this.output.toString().contains("str " + input)) {
+				String temp = "str " + input + " \"\\n\"\n";
+
+				// see below comment about in-order vs reverse-order
+				// this.output.insert(0, temp);
+				this.output.insert(varOffset, temp);
+
+				this.varOffset += temp.length();
+			}
+			break;
+		}
 	}
 
 	/*
@@ -108,7 +160,7 @@ class TinyGenerator {
 	private String convertRegString(String input) {
 		if (input.matches("\\$T[0-9]+")) {
 			try {
-				int temp = Integer.parseInt(input.substring(2, 3));
+				int temp = Integer.parseInt(input.substring(2));
 				return "r" + (temp - 1);
 			} catch (Exception e) {
 				return "FAILED TO PARSE INT FROM: " + input + "\n";
@@ -136,7 +188,6 @@ class TinyGenerator {
 					this.output.insert(varOffset, temp);
 
 					this.varOffset += temp.length();
-
 				}
 			}
 			return input;
