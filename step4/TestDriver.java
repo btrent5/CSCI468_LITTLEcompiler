@@ -2,9 +2,45 @@ import java.util.ArrayList;
 
 public class TestDriver {
 	public static void main(String[] args) {
+		// building from sample IR
+		TinyGenerator testGen = new TinyGenerator(test_while());
+	}
+
+	static private ArrayList<IRNode> test_while() {
 		ArrayList<IRNode> test = new ArrayList<IRNode>();
 
-		// building from sample IR
+		test.add(new IRNode("LABEL", "main"));
+		test.add(new IRNode("LINK"));
+		test.add(new IRNode("STOREF", "7.0", "$T1"));
+		test.add(new IRNode("STOREF", "$T1", "num"));
+		test.add(new IRNode("STOREI", "100", "$T2"));
+		test.add(new IRNode("STOREI", "$T2", "i"));
+		test.add(new IRNode("STOREI", "1", "$T3"));
+		test.add(new IRNode("STOREI", "$T3", "j"));
+		test.add(new IRNode("STOREF", "num", "approx"));
+		test.add(new IRNode("LABEL", "label1"));
+		test.add(new IRNode("STOREI", "0", "$T4"));
+		test.add(new IRNode("EQI", "i", "$T4", "label2"));
+		test.add(new IRNode("STOREF", "0.5", "$T5"));
+		test.add(new IRNode("DIVF", "num", "approx", "$T6"));
+		test.add(new IRNode("ADDF", "approx", "$T6", "$T7"));
+		test.add(new IRNode("MULTF", "$T5", "$T7", "$T8"));
+		test.add(new IRNode("STOREF", "$T8", "newapprox"));
+		test.add(new IRNode("STOREF", "newapprox", "approx"));
+		test.add(new IRNode("STOREI", "1", "$T9"));
+		test.add(new IRNode("SUBI", "i", "$T9", "$T10"));
+		test.add(new IRNode("STOREI", "$T10", "i"));
+		test.add(new IRNode("JUMP", "label1"));
+		test.add(new IRNode("LABEL", "label2"));
+		test.add(new IRNode("WRITEF", "approx"));
+		test.add(new IRNode("RET"));
+
+		return test;
+	}
+
+	static private ArrayList<IRNode> step4_testcase2() {
+		ArrayList<IRNode> test = new ArrayList<IRNode>();
+
 		test.add(new IRNode("LABEL", "main"));
 		test.add(new IRNode("LINK"));
 		test.add(new IRNode("STOREI", "1", "$T1"));
@@ -55,7 +91,7 @@ public class TestDriver {
 		test.add(new IRNode("LABEL", "label2"));
 		test.add(new IRNode("RET"));
 
-		TinyGenerator testGen = new TinyGenerator(test);
+		return test;
 	}
 
 }
