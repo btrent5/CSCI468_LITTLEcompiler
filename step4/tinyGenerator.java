@@ -122,6 +122,24 @@ class TinyGenerator {
 		System.out.print(this.output);
 	}
 
+	private boolean canParseInt(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean canParseFloat(String input) {
+		try {
+			Float.parseFloat(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 	private void prependStringValue(String input) {
 		switch (input) {
 		case "newline":
@@ -145,46 +163,37 @@ class TinyGenerator {
 	 * will prepend a var declaration if using a named var
 	 */
 	private String convertRegString(String input) {
-		if (input.matches("\\$T[0-9]+")) {
-			try {
-				int temp = Integer.parseInt(input.substring(2));
-				return "r" + (temp - 1);
-			} catch (Exception e) {
-				return "FAILED TO PARSE INT FROM: " + input + "\n";
-			}
-		} else {
-			try {
-				// int values will not throw an exception here
-				int temp = Integer.parseInt(input);
-				return input;
-			} catch (Exception e) {
-			}
-			try {
-				// float values will not throw an exception here
-				float temp = Float.parseFloat(input);
-				return input;
-			} catch (Exception e) {
-				// this is a named variable
-				if (!this.output.toString().contains(" " + input + "\n")) {
-					String temp = "var " + input + "\n";
-
-					/*
-					 * the following two lines prepend the var declarations either in-order or
-					 * reverse-order
-					 *
-					 * neither is the order the sample output uses...
-					 *
-					 * should not matter as long as we aren't being graded on output diffing
-					 */
-
-					// this.output.insert(0, temp);
-					this.output.insert(varOffset, temp);
-
-					this.varOffset += temp.length();
-				}
-			}
-
+		// is the input an integer constant
+		if (canParseInt(input))
 			return input;
+
+		// is the input a float constant
+		if (canParseFloat(input))
+			return input;
+
+		// is the input of the form $T4
+		if (input.matches("\\$T[0-9]+") && canParseInt(input.substring(2))) {
+			return "r" + (Integer.parseInt(input.substring(2)) - 1);
 		}
+
+		// input must be a namedvariable at this point
+		if (!this.output.toString().contains(" " + input + "\n")) {
+			String temp = "var " + input + "\n";
+
+			/*
+			 * the following two lines prepend the var declarations either in-order or
+			 * reverse-order
+			 *
+			 * neither is the order the sample output uses...
+			 *
+			 * should not matter as long as we aren't being graded on output diffing
+			 */
+
+			// this.output.insert(0, temp);
+			this.output.insert(varOffset, temp);
+
+			this.varOffset += temp.length();
+		}
+		return input;
 	}
 }
