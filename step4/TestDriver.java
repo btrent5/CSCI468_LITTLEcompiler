@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class TestDriver {
 	public static void main(String[] args) {
 		// building from sample IR
-		TinyGenerator testGen = new TinyGenerator(test_while());
+		TinyGenerator testGen = new TinyGenerator(test_adv());
 	}
 
 	static private ArrayList<IRNode> test_while() {
@@ -89,6 +89,60 @@ public class TestDriver {
 		test.add(new IRNode("STOREI", "$T18", "a"));
 		test.add(new IRNode("JUMP", "label1"));
 		test.add(new IRNode("LABEL", "label2"));
+		test.add(new IRNode("RET"));
+
+		return test;
+	}
+
+	static private ArrayList<IRNode> test_adv() {
+		ArrayList<IRNode> test = new ArrayList<IRNode>();
+
+		test.add(new IRNode("LABEL", "main"));
+		test.add(new IRNode("LINK"));
+		test.add(new IRNode("STOREF", "0.0001", "$T1"));
+		test.add(new IRNode("STOREF", "$T1", "tolerance"));
+		test.add(new IRNode("STOREF", "7.0", "$T2"));
+		test.add(new IRNode("STOREF", "$T2", "num"));
+		test.add(new IRNode("STOREF", "num", "approx"));
+		test.add(new IRNode("STOREI", "0", "$T3"));
+		test.add(new IRNode("STOREI", "$T3", "count"));
+		test.add(new IRNode("STOREF", "0.0", "$T4"));
+		test.add(new IRNode("STOREF", "$T4", "diff"));
+		test.add(new IRNode("STOREI", "0", "$T5"));
+		test.add(new IRNode("STOREI", "$T5", "enough"));
+		test.add(new IRNode("LABEL", "label1"));
+		test.add(new IRNode("STOREI", "1", "$T6"));
+		test.add(new IRNode("EQI", "enough", "$T6", "label2"));
+		test.add(new IRNode("STOREI", "1", "$T7"));
+		test.add(new IRNode("ADDI", "count", "$T7", "$T8"));
+		test.add(new IRNode("STOREI", "$T8", "count"));
+		test.add(new IRNode("STOREF", "0.5", "$T9"));
+		test.add(new IRNode("DIVF", "num", "approx", "$T10"));
+		test.add(new IRNode("ADDF", "approx", "$T10", "$T11"));
+		test.add(new IRNode("MULTF", "$T9", "$T11", "$T12"));
+		test.add(new IRNode("STOREF", "$T12", "newapprox"));
+		test.add(new IRNode("SUBF", "approx", "newapprox", "$T13"));
+		test.add(new IRNode("STOREF", "$T13", "diff"));
+		test.add(new IRNode("STOREF", "0.0", "$T14"));
+		test.add(new IRNode("LEF", "diff", "$T14", "label3"));
+		test.add(new IRNode("GEF", "diff", "tolerance", "label4"));
+		test.add(new IRNode("STOREI", "1", "$T15"));
+		test.add(new IRNode("STOREI", "$T15", "enough"));
+		test.add(new IRNode("LABEL", "label4"));
+		test.add(new IRNode("JUMP", "label5"));
+		test.add(new IRNode("LABEL", "label3"));
+		test.add(new IRNode("STOREF", "0.0", "$T16"));
+		test.add(new IRNode("SUBF", "$T16", "tolerance", "$T17"));
+		test.add(new IRNode("LEF", "diff", "$T17", "label6"));
+		test.add(new IRNode("STOREI", "1", "$T18"));
+		test.add(new IRNode("STOREI", "$T18", "enough"));
+		test.add(new IRNode("LABEL", "label6"));
+		test.add(new IRNode("LABEL", "label5"));
+		test.add(new IRNode("STOREF", "newapprox", "approx"));
+		test.add(new IRNode("JUMP", "label1"));
+		test.add(new IRNode("LABEL", "label2"));
+		test.add(new IRNode("WRITEF", "approx"));
+		test.add(new IRNode("WRITEI", "count"));
 		test.add(new IRNode("RET"));
 
 		return test;
