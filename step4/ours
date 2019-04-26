@@ -1,0 +1,34 @@
+var num
+var i
+var j
+var approx
+var newapprox
+label main
+move 7.0 r0
+move r0 num
+move 100 r1
+move r1 i
+move 1 r2
+move r2 j
+move num approx
+label label1
+move 0 r3
+cmpi i r3
+jeq label2
+move 0.5 r4
+move num r5
+divr approx r5
+move approx r6
+addr r5 r6
+move r4 r7
+mulr r6 r7
+move r7 newapprox
+move newapprox approx
+move 1 r8
+move i r9
+subi r8 r9
+move r9 i
+jmp label1
+label label2
+sys writer approx
+sys halt

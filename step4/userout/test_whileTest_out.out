@@ -1,0 +1,14 @@
+error on line 1 : unknown opcode
+line 2 warning: non comment found at end of line
+error on line 2 : unknown opcode
+line 3 warning: non comment found at end of line
+error on line 3 : unknown opcode
+line 4 warning: non comment found at end of line
+error on line 4 : unknown opcode
+line 5 warning: non comment found at end of line
+error on line 5 : unknown opcode
+line 6 warning: non comment found at end of line
+error on line 6 : unknown opcode
+error on line 7 : unknown opcode
+line 8 warning: non comment found at end of line
+error on line 8 : unknown opcode
