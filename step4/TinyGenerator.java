@@ -17,9 +17,14 @@ class TinyGenerator {
 	private final String swapRegister = "r199";
 	StringBuilder output = new StringBuilder();
 
+    /* btw, spaces are superior to tabs */
+
 	public TinyGenerator(ArrayList<IRNode> input) {
 		for (IRNode current : input) {
 			switch (current.getOperator()) {
+			case "VAR":
+				convertRegString(current.getReg1());
+				break;
 			case "ADDI":
 				this.output.append("move " + convertRegString(current.getReg1()) + " "
 						+ convertRegString(current.getReg3()) + "\n");

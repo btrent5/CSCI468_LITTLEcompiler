@@ -46,6 +46,9 @@ public class Listener extends little_grammarBaseListener {
 
     @Override
     public void exitVar_decl(little_grammarParser.Var_declContext ctx) {
+        for(String var_name : ctx.id_list().getText().split(",")) {
+            IRNodes.add(new IRNode("VAR", var_name));
+        }
         this.inDecl = false;
     }
 
@@ -54,6 +57,10 @@ public class Listener extends little_grammarBaseListener {
         if (ctx != null) {
             this.declType = ctx.getText();
         }
+    }
+
+    @Override
+    public void exitAssign_stmt(little_grammarParser.Assign_stmtContext ctx) { 
     }
 
     @Override
@@ -80,6 +87,7 @@ public class Listener extends little_grammarBaseListener {
         if (ctx.any_type() != null) {
             this.s = new SymbolTable(ctx.id().getText());
             this.tableList.add(this.s);
+            IRNodes.add(new IRNode("LABEL", ctx.id().getText()));
         }
     }
 
