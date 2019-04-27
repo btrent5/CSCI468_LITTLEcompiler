@@ -8,12 +8,14 @@ import java.util.ArrayList;
 public class Listener extends little_grammarBaseListener {
     private SymbolTable s; // the current table
     private ArrayList<SymbolTable> tableList;
+    private ArrayList<IRNode> IRNodes;
     private Boolean inDecl = true;
     private String declType = "";
     private int scopeNum = 1;
 
-    public Listener() {
+    public Listener(ArrayList<IRNode> IRNodes) {
         tableList = new ArrayList<SymbolTable>();
+        this.IRNodes = IRNodes;
     }
 
     public ArrayList<SymbolTable> getSymbolTables() {
