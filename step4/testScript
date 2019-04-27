@@ -4,4 +4,4 @@ javac IRNode.java
 javac TinyGenerator.java
 javac TestDriver.java
 
-java TestDriver > ours
+java TestDriver

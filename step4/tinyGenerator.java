@@ -50,7 +50,12 @@ class TinyGenerator {
 				this.output.append("jeq " + current.getReg3() + "\n");
 				break;
 			case "GEF":
-				this.output.append("cmpr " + current.getReg1() + " " + convertRegString(current.getReg2()) + "\n");
+				if (hasBothNamedVars(current)) {
+					this.output.append("move " + current.getReg2() + " " + this.swapRegister + "\n");
+					this.output.append("cmpr " + current.getReg1() + " " + this.swapRegister + "\n");
+				} else {
+					this.output.append("cmpr " + current.getReg1() + " " + convertRegString(current.getReg2()) + "\n");
+				}
 				this.output.append("jge " + current.getReg3() + "\n");
 				break;
 			case "GEI":
@@ -208,12 +213,12 @@ class TinyGenerator {
 
 		// is the input of the form $T4
 		if (input.matches("\\$T[0-9]+") && canParseInt(input.substring(2))) {
-			// return "r" + (Integer.parseInt(input.substring(2)) - 1);
-			return "r" + (Integer.parseInt(input.substring(2)));
+			return "r" + (Integer.parseInt(input.substring(2)) - 1);
+			// return "r" + (Integer.parseInt(input.substring(2)));
 		}
 
 		// input must be a named variable at this point
-		if (!this.output.toString().contains(" " + input + "\n")) {
+		if (!this.output.toString().contains("var " + input + "\n")) {
 			String temp = "var " + input + "\n";
 
 			/*
