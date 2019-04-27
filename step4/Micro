@@ -17,6 +17,7 @@ function setup {
     javac Symbol.java
     javac SymbolTable.java
     javac Listener.java
+    javac TinyGenerator.java
     javac Driver.java
 }
 

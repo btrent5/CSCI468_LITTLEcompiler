@@ -1,23 +1,30 @@
 import java.util.ArrayList;
 
 /*
- * as of last time this comment was updated, this has features for the following test cases
- *
- * step4_testcase
- * step4_testcase2
- * test_combination
- * test_expr
- * test_if
- * test_mult
+* as of last time this comment was updated, this has features for the following test cases
+*
+* step4_testcase
+* step4_testcase2
+* test_combination
+* test_expr
+* test_if
+* test_mult
+* test_while
 */
 
 class TinyGenerator {
 	private int varOffset = 0;
+	private final String swapRegister = "r199";
 	StringBuilder output = new StringBuilder();
+
+    /* btw, spaces are superior to tabs */
 
 	public TinyGenerator(ArrayList<IRNode> input) {
 		for (IRNode current : input) {
 			switch (current.getOperator()) {
+			case "VAR":
+				convertRegString(current.getReg1());
+				break;
 			case "ADDI":
 				this.output.append("move " + convertRegString(current.getReg1()) + " "
 						+ convertRegString(current.getReg3()) + "\n");
@@ -47,6 +54,15 @@ class TinyGenerator {
 						+ convertRegString(current.getReg2()) + "\n");
 				this.output.append("jeq " + current.getReg3() + "\n");
 				break;
+			case "GEF":
+				if (hasBothNamedVars(current)) {
+					this.output.append("move " + current.getReg2() + " " + this.swapRegister + "\n");
+					this.output.append("cmpr " + current.getReg1() + " " + this.swapRegister + "\n");
+				} else {
+					this.output.append("cmpr " + current.getReg1() + " " + convertRegString(current.getReg2()) + "\n");
+				}
+				this.output.append("jge " + current.getReg3() + "\n");
+				break;
 			case "GEI":
 				this.output.append("cmpi " + current.getReg1() + " " + convertRegString(current.getReg2()) + "\n");
 				this.output.append("jge " + current.getReg3() + "\n");
@@ -60,6 +76,11 @@ class TinyGenerator {
 				break;
 			case "LABEL":
 				this.output.append("label " + current.getReg1() + "\n");
+				break;
+			case "LEF":
+				this.output.append("cmpr " + convertRegString(current.getReg1()) + " "
+						+ convertRegString(current.getReg2()) + "\n");
+				this.output.append("jle " + current.getReg3() + "\n");
 				break;
 			case "LEI":
 				this.output.append("cmpi " + convertRegString(current.getReg1()) + " "
@@ -92,12 +113,28 @@ class TinyGenerator {
 				this.output.append("sys halt");
 				break;
 			case "STOREF":
-				this.output.append("move " + convertRegString(current.getReg1()) + " "
-						+ convertRegString(current.getReg2()) + "\n");
+				if (hasBothNamedVars(current)) {
+					this.output.append("move " + current.getReg1() + " " + this.swapRegister + "\n");
+					this.output.append("move " + this.swapRegister + " " + current.getReg2() + "\n");
+				} else {
+					this.output.append("move " + convertRegString(current.getReg1()) + " "
+							+ convertRegString(current.getReg2()) + "\n");
+				}
 				break;
 			case "STOREI":
+				if (hasBothNamedVars(current)) {
+					this.output.append("move " + current.getReg1() + " " + this.swapRegister + "\n");
+					this.output.append("move " + this.swapRegister + " " + current.getReg2() + "\n");
+				} else {
+					this.output.append("move " + convertRegString(current.getReg1()) + " "
+							+ convertRegString(current.getReg2()) + "\n");
+				}
+				break;
+			case "SUBF":
 				this.output.append("move " + convertRegString(current.getReg1()) + " "
-						+ convertRegString(current.getReg2()) + "\n");
+						+ convertRegString(current.getReg3()) + "\n");
+				this.output.append("subr " + convertRegString(current.getReg2()) + " "
+						+ convertRegString(current.getReg3()) + "\n");
 				break;
 			case "SUBI":
 				this.output.append("move " + convertRegString(current.getReg1()) + " "
@@ -120,6 +157,14 @@ class TinyGenerator {
 			}
 		}
 		System.out.print(this.output);
+	}
+
+	private boolean hasBothNamedVars(IRNode input) {
+		if (canParseInt(input.getReg1()) || canParseFloat(input.getReg1()) || input.getReg1().matches("\\$T[0-9]+"))
+			return false;
+		if (canParseInt(input.getReg2()) || canParseFloat(input.getReg2()) || input.getReg2().matches("\\$T[0-9]+"))
+			return false;
+		return true;
 	}
 
 	private boolean canParseInt(String input) {
@@ -174,10 +219,11 @@ class TinyGenerator {
 		// is the input of the form $T4
 		if (input.matches("\\$T[0-9]+") && canParseInt(input.substring(2))) {
 			return "r" + (Integer.parseInt(input.substring(2)) - 1);
+			// return "r" + (Integer.parseInt(input.substring(2)));
 		}
 
-		// input must be a namedvariable at this point
-		if (!this.output.toString().contains(" " + input + "\n")) {
+		// input must be a named variable at this point
+		if (!this.output.toString().contains("var " + input + "\n")) {
 			String temp = "var " + input + "\n";
 
 			/*

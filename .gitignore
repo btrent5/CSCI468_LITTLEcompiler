@@ -3,6 +3,11 @@
 *.interp
 *.tokens
 antlr-4.7.2-complete.jar
+little_grammarBaseListener.java
+little_grammarLexer.java
+little_grammarListener.java
+little_grammarParser.java
+
 
 # java files
 *.class
