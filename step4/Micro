@@ -52,4 +52,4 @@ function remove_files {
 check_antlr_jar
 setup
 run_tests $1
-remove_files
+#remove_files

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * This class extends the BaseListener to implement a subset of the methods.
@@ -12,6 +13,9 @@ public class Listener extends little_grammarBaseListener {
     private Boolean inDecl = true;
     private String declType = "";
     private int scopeNum = 1;
+    private Stack<String> exprStack = new Stack<>();
+    int regNum = 1;
+    int labelNum = 1;
 
     public Listener(ArrayList<IRNode> IRNodes) {
         tableList = new ArrayList<SymbolTable>();
@@ -59,8 +63,59 @@ public class Listener extends little_grammarBaseListener {
         }
     }
 
+    @Override public void exitAssign_expr(little_grammarParser.Assign_exprContext ctx) {
+        IRNodes.add(new IRNode("STORE" + checkType(), exprStack.pop(), "$T" + regNum));
+        IRNodes.add(new IRNode("STORE" + checkType(),"$T" + regNum, ctx.id().getText()));
+        regNum++;
+    }
+
+    @Override public void exitCond(little_grammarParser.CondContext ctx) {
+        String operation = "";
+        switch(ctx.compop().getText()) {
+            case ">":
+                operation = "LE";
+                break;
+            case ">=":
+                operation = "LT";
+                break;
+            case "<":
+                operation = "GE";
+                break;
+            case "<=":
+                operation = "GT";
+                break;
+            case "!=":
+                operation = "EQ";
+                break;
+            case "=":
+                operation = "NE";
+                break;
+        }
+        operation += checkType();
+        IRNodes.add(new IRNode(operation, exprStack.pop(), exprStack.pop(), "label" + labelNum));
+        labelNum++;
+    }
+
     @Override
-    public void exitAssign_stmt(little_grammarParser.Assign_stmtContext ctx) { 
+    public void exitAddop(little_grammarParser.AddopContext ctx) { 
+        exprStack.push(ctx.getText()); //ctx.getText is + or -
+    }
+
+    @Override
+    public void exitMulop(little_grammarParser.MulopContext ctx) { 
+        exprStack.push(ctx.getText()); //ctx.getText is * or /
+    }
+
+    @Override public void exitWrite_stmt(little_grammarParser.Write_stmtContext ctx) {
+        
+        for(String write_var : ctx.id_list().getText().split(",")) {
+            IRNodes.add(new IRNode("WRITE" + checkType(), write_var));
+        }
+    }
+
+    @Override //dif between this and exitFactor?
+    public void exitPrimary(little_grammarParser.PrimaryContext ctx) {
+        exprStack.push(ctx.getText());
     }
 
     @Override
@@ -101,6 +156,12 @@ public class Listener extends little_grammarBaseListener {
     }
 
     @Override
+    public void exitIf_stmt(little_grammarParser.If_stmtContext ctx) {
+        IRNodes.add(new IRNode("LABEL", "label" + labelNum));
+        labelNum++;
+    }
+
+    @Override
     public void enterElse_part(little_grammarParser.Else_partContext ctx) {
 
         if (ctx.decl() != null) {
@@ -115,6 +176,25 @@ public class Listener extends little_grammarBaseListener {
         if (ctx.cond() != null) {
             this.s = new SymbolTable("BLOCK " + scopeNum++);
             this.tableList.add(this.s);
+        }
+    }
+
+    @Override
+    public void exitProgram(little_grammarParser.ProgramContext ctx) {
+        IRNodes.add(new IRNode("RET"));
+    }
+
+    public String checkType() {
+        switch(this.declType) {
+            case "INT":
+                return "I";
+            case "FLOAT":
+                return "F";
+            case "STRING":
+                return "S";
+            default:
+                System.out.println("Unknown declType " + this.declType);
+                return "";
         }
     }
 }

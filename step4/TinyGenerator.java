@@ -20,6 +20,20 @@ class TinyGenerator {
     /* btw, spaces are superior to tabs */
 
 	public TinyGenerator(ArrayList<IRNode> input) {
+
+		//print out IR code for debugging purposes
+		System.out.println(";IR code");
+		for (IRNode current : input) {
+			System.out.print(";" + current.getOperator());
+			System.out.print(" " + current.getReg1());
+			System.out.print(" " + current.getReg2());
+			System.out.print(" " + current.getReg3());
+			System.out.println();
+		}
+		System.out.println(";tiny code");
+		
+
+		//convert IR code into assembly
 		for (IRNode current : input) {
 			switch (current.getOperator()) {
 			case "VAR":
@@ -110,7 +124,7 @@ class TinyGenerator {
 				this.output.append("sys readi " + convertRegString(current.getReg1()) + "\n");
 				break;
 			case "RET":
-				this.output.append("sys halt");
+				this.output.append("sys halt\n");
 				break;
 			case "STOREF":
 				if (hasBothNamedVars(current)) {
