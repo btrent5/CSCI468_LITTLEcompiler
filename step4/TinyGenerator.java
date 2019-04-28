@@ -68,6 +68,10 @@ class TinyGenerator {
 						+ convertRegString(current.getReg2()) + "\n");
 				this.output.append("jeq " + current.getReg3() + "\n");
 				break;
+			case "EQF":
+				this.output.append("cmpr " + convertRegString(current.getReg1()) + " " 
+						+ convertRegString(current.getReg2()) + "\n");
+				this.output.append("jeq " + current.getReg3() + "\n");
 			case "GEF":
 				if (hasBothNamedVars(current)) {
 					this.output.append("move " + current.getReg2() + " " + this.swapRegister + "\n");

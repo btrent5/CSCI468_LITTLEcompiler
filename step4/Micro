@@ -21,7 +21,7 @@ function setup {
     javac Driver.java
 }
 
-# Run the input tests agaisnt Driver.java.
+# Run the input tests against Driver.java.
 function run_tests {
     # echo "Running Tests..."
     if [[ $# -eq 0 ]] ; then
@@ -52,4 +52,4 @@ function remove_files {
 check_antlr_jar
 setup
 run_tests $1
-#remove_files
+remove_files
